@@ -31,3 +31,4 @@ instance/
 # Deployment
 *.sqlite3
 *.db
+reimbreez.db
