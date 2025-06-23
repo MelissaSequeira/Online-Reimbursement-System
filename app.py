@@ -225,10 +225,10 @@ def hod_approve(req_id):
 
 @app.route('/principal_dashboard')
 def principal_dashboard():
-    if session.get('role')!='HOD':
+    if session.get('role')!='Principal':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    requests=get_pending_requests_for_hod();
+    requests=get_pending_requests_for_principal();
     return render_template('Principal_dashboard.html', requests=requests)
 
 @app.route('/principal_approve/<int:req_id>',methods=['POST'])
