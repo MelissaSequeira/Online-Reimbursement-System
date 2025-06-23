@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash  #application hi flask ka hai
+from flask import Flask, render_template, request, redirect, send_from_directory, url_for, session, flash  #application hi flask ka hai
 from flask_mail import *  #for email system
 import random   #otp generate karne ke liye
 from dotenv import load_dotenv
 import os
-from db import create_users_table, insert_user,get_user_by_email, reimb_db, insert_reimbursement, get_reimbursement_by_email,get_name_by_email
+#create_users_table, insert_user,get_user_by_email, reimb_db, insert_reimbursement, get_reimbursement_by_email,get_name_by_email,get_pending_requests_for_teacher, update_teacher_approval
+from db import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -35,7 +36,7 @@ reimb_db()
 def register():
     if request.method=='POST':
         email= request.form['email']
-        if not email.endswith('fcrit.ac.in'):
+        if not (email.endswith('fcrit.ac.in') or email.endswith('gmail.com')):
             flash('Only college email id works', 'danger')
             return redirect(url_for('register'))
         otp=str(random.randint (100000,999999))
@@ -163,22 +164,111 @@ def student_dashboard():
     username = showName()
     return render_template('student.html', reimbursements=reimbursements, username=username )
 
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    if session.get('role') not in ['Teacher', 'HOD', 'Principal', 'MD', 'Accountant', 'Student']:
+        flash("Access denied", "danger")
+        return redirect(url_for('login'))
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
 
 @app.route('/teacher_dashboard')
 def teacher_dashboard():
-    return "👨‍🏫 Teacher Dashboard"
+    if session.get('role') != 'Teacher':
+        flash('Access Denied', 'danger')
+        return redirect(url_for('login'))
+
+    requests = get_pending_requests_for_teacher()
+    return render_template('teacher_dashboard.html', requests=requests)
+
+@app.route('/teacher_approve/<int:req_id>', methods=['POST'])
+def teacher_approve(req_id):
+    if session.get('role') != 'Teacher':
+        flash('Access Denied', 'danger')
+        return redirect(url_for('login'))
+
+    remarks = request.form['remarks']
+    action = request.form['action']
+
+    if action == 'approve':
+        update_teacher_approval(req_id, 'Approved', remarks)
+        flash('✅ Request approved and sent to HOD', 'success')
+    elif action == 'reject':
+        update_teacher_approval(req_id, 'Rejected', remarks)
+        flash('❌ Request rejected', 'danger')
+
+    return redirect(url_for('teacher_dashboard'))
 
 @app.route('/hod_dashboard')
 def hod_dashboard():
-    return "📘 HOD Dashboard"
+    if session.get('role')!='HOD':
+        flash('Access denied', 'danger')
+        return redirect(url_for('login'))
+    requests=get_pending_requests_for_hod();
+    return render_template('Hod_dashboard.html', requests=requests)
+
+@app.route('/hod_approve/<int:req_id>',methods=['POST'])
+def hod_approve(req_id):
+    if session.get('role')!='HOD':
+        flash('Access denied', 'danger')
+        return redirect(url_for('login'))
+    remarks= request.form['remarks']
+    action = request.form['action']
+    if action=='approve':
+        update_hod_approval(req_id,'approved',remarks)
+        flash('✅ Request approved and sent to Principal', 'success')
+    elif action == 'reject':
+        update_hod_approval(req_id, 'Rejected', remarks)
+        flash('❌ Request rejected', 'danger')
+    return redirect(url_for('hod_dashboard'))
 
 @app.route('/principal_dashboard')
 def principal_dashboard():
-    return "🏛️ Principal Dashboard"
+    if session.get('role')!='HOD':
+        flash('Access denied', 'danger')
+        return redirect(url_for('login'))
+    requests=get_pending_requests_for_hod();
+    return render_template('Principal_dashboard.html', requests=requests)
+
+@app.route('/principal_approve/<int:req_id>',methods=['POST'])
+def principal_approve(req_id):
+    if session.get('role')!='Principal':
+        flash('Access denied', 'danger')
+        return redirect(url_for('login'))
+    remarks= request.form['remarks']
+    action = request.form['action']
+    if action=='approve':
+        update_principal_approval(req_id,'approved',remarks)
+        flash('✅ Request approved and sent to MD', 'success')
+    elif action == 'reject':
+        update_principal_approval(req_id, 'Rejected', remarks)
+        flash('❌ Request rejected', 'danger')
+    return redirect(url_for('Principal_dashboard'))
+
 
 @app.route('/md_dashboard')
 def md_dashboard():
-    return "👔 MD Dashboard"
+    if session.get('role')!='MD':
+        flash('Access denied', 'danger')
+        return redirect(url_for('login'))
+    requests=get_pending_requests_for_md();
+    return render_template('MD_dashboard.html', requests=requests)
+
+@app.route('/md_approve/<int:req_id>',methods=['POST'])
+def md_approve(req_id):
+    if session.get('role')!='MD':
+        flash('Access denied', 'danger')
+        return redirect(url_for('login'))
+    remarks= request.form['remarks']
+    action = request.form['action']
+    if action=='approve':
+        update_md_approval(req_id,'approved',remarks)
+        flash('✅ Request approved and sent to accountant', 'success')
+    elif action == 'reject':
+        update_md_approval(req_id, 'Rejected', remarks)
+        flash('❌ Request rejected', 'danger')
+    return redirect(url_for('md_dashboard'))
 
 @app.route('/accountant_dashboard')
 def accountant_dashboard():

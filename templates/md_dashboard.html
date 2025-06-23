@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MD Dashboard</title>
+</head>
+<body>
+    <h2>MD(Fr. Seby Rodrigues or Fr. Peter) Approval Dashboard</h2>
+
+    {% if requests %}
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Purpose</th>
+            <th>Amount</th>
+            <th>Submitted At</th>
+            <th>Actions</th>
+        </tr>
+        {% for req in requests %}
+        <tr>
+            <td>{{ req[0] }}</td>
+            <td>{{ req[1] }}</td>
+            <td>{{ req[2] }}</td>
+            <td>₹{{ req[3] }}</td>
+            <td>{{ req[9] }}</td>
+
+            <td>
+        <a href="/uploads/{{ req[4] }}" target="_blank">Letter</a><br>
+        <a href="/uploads/{{ req[5] }}" target="_blank">Certificate</a><br>
+        <a href="/uploads/{{ req[6] }}" target="_blank">Brochure</a><br>
+        <a href="/uploads/{{ req[7] }}" target="_blank">Bill</a>
+    </td>
+
+            <td>
+                <form method="POST" action="/md_approve/{{ req[0] }}">
+                    <textarea name="remarks" placeholder="Add remarks" required></textarea><br>
+                    <button type="submit" name="action" value="approve">Approve</button>
+                    <button type="submit" name="action" value="reject">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No pending requests.</p>
+    {% endif %}
+</body>
+</html>

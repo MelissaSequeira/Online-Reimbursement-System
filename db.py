@@ -52,8 +52,19 @@ def reimb_db():
   brochure TEXT NOT NULL,
             bill TEXT NOT NULL,
             status TEXT NOT NULL,
-            submitted_at TEXT NOT NULL
-        )
+            submitted_at TEXT NOT NULL,
+
+            teacher_status TEXT DEFAULT 'Pending',
+            teacher_remarks TEXT,
+            hod_status TEXT DEFAULT 'Pending',
+            hod_remarks TEXT,
+            principal_status TEXT DEFAULT 'Pending',
+            principal_remarks TEXT,
+            md_status TEXT DEFAULT 'Pending',
+            md_remarks TEXT,
+            accountant_status TEXT DEFAULT 'Pending',
+            accountant_remarks TEXT)
+        
     ''')
     conn.commit()
     conn.close()
@@ -87,3 +98,80 @@ def get_name_by_email(email):
 
     conn.close()
     return name
+
+
+def get_pending_requests_for_teacher():
+    conn= sqlite3.connect("reimbreeze.db")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM reimb_form WHERE teacher_status = 'Pending'")
+    data = cur.fetchall()
+    conn.close()
+    return data
+
+def get_pending_requests_for_hod():
+    conn= sqlite3.connect("reimbreeze.db")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM reimb_form WHERE hod_status = 'Pending'")
+    data = cur.fetchall()
+    conn.close()
+    return data
+
+def get_pending_requests_for_principal():
+    conn= sqlite3.connect("reimbreeze.db")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM reimb_form WHERE principal_status = 'Pending'")
+    data = cur.fetchall()
+    conn.close()
+    return data
+
+def get_pending_requests_for_md():
+    conn= sqlite3.connect("reimbreeze.db")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM reimb_form WHERE md_status = 'Pending'")
+    data = cur.fetchall()
+    conn.close()
+    return data
+
+def update_teacher_approval(req_id, status, remarks):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute('''
+        UPDATE reimb_form
+        SET teacher_status = ?, teacher_remarks = ?, status = ?
+        WHERE id = ?
+    ''', (status, remarks, f"Pending HOD" if status == "Approved" else "Rejected by Teacher", req_id))
+    conn.commit()
+    conn.close()
+
+def update_hod_approval(req_id, status, remarks):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute('''
+        UPDATE reimb_form
+        SET hod_status = ?, hod_remarks = ?, status = ?
+        WHERE id = ?
+    ''', (status, remarks, f"Pending Principal" if status == "Approved" else "Rejected by HOD", req_id))
+    conn.commit()
+    conn.close()
+
+def update_principal_approval(req_id, status, remarks):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute('''
+        UPDATE reimb_form
+        SET principal_status = ?, principal_remarks = ?, status = ?
+        WHERE id = ?
+    ''', (status, remarks, f"Pending MD" if status == "Approved" else "Rejected by Principal", req_id))
+    conn.commit()
+    conn.close()
+
+def update_md_approval(req_id, status, remarks):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute('''
+        UPDATE reimb_form
+        SET md_status = ?, md_remarks = ?, status = ?
+        WHERE id = ?
+    ''', (status, remarks, f"Pending Accountant" if status == "Approved" else "Rejected by Accountant", req_id))
+    conn.commit()
+    conn.close()
