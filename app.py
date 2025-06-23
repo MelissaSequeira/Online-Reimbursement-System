@@ -244,7 +244,7 @@ def principal_approve(req_id):
     elif action == 'reject':
         update_principal_approval(req_id, 'Rejected', remarks)
         flash('❌ Request rejected', 'danger')
-    return redirect(url_for('Principal_dashboard'))
+    return redirect(url_for('principal_dashboard'))
 
 
 @app.route('/md_dashboard')
