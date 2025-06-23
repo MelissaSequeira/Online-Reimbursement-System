@@ -32,3 +32,4 @@ instance/
 *.sqlite3
 *.db
 reimbreez.db
+/uploads
