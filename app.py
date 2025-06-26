@@ -272,7 +272,33 @@ def md_approve(req_id):
 
 @app.route('/accountant_dashboard')
 def accountant_dashboard():
-    return "💼 Accountant Dashboard"
+    if session.get('role')!='Accountant':
+        flash('Access Denied','danger')
+        return redirect(url_for('login'))
+    requests = get_pending_requests_for_accountant()
+    return render_template('Accountant_dashboard.html', requests=requests)
+
+@app.route('/accountant_approve/<int:req_id>',methods=['POST'])
+def accountant_approve(req_id):
+    if session.get('role') != 'Accountant':
+        flash('Access Denied', 'danger')
+        return redirect(url_for('login'))
+
+    remarks = request.form['remarks']
+    action = request.form['action']
+    status = 'Approved' if action == 'approve' else 'Rejected'
+    update_accountant_approval(req_id, status, remarks)
+    conn=connect_db()
+    cur=conn.cursor()
+    cur.execute("SELECT email FROM reimb_form WHERE id=?", (req_id,))
+    student_email = cur.fetchone()[0]
+    conn.close()
+    msg = Message('Reimbursement Status', sender=app.config['MAIL_USERNAME'], recipients=[student_email])
+    msg.body = f"Your reimbursement request has been {'approved and processed' if status == 'Approved' else 'rejected by accountant'}.\n\nRemarks: {remarks}"
+    mail.send(msg)
+
+    flash('✅ Final status saved and student notified.', 'success')
+    return redirect(url_for('accountant_dashboard'))
 
 if __name__=='__main__':
     app.run(debug=True)

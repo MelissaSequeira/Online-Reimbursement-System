@@ -1,0 +1,28 @@
+<h2>Accountant Final Check</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th><th>Student Email</th><th>Amount</th><th>Purpose</th><th>Files</th><th>Action</th>
+    </tr>
+    {% for req in requests %}
+    <tr>
+        <td>{{ req[0] }}</td>
+        <td>{{ req[1] }}</td>
+        <td>₹{{ req[3] }}</td>
+        <td>{{ req[2] }}</td>
+        <td>
+            <a href="/uploads/{{ req[4] }}" target="_blank">Letter</a> |
+            <a href="/uploads/{{ req[5] }}" target="_blank">Cert</a> |
+            <a href="/uploads/{{ req[6] }}" target="_blank">Brochure</a> |
+            <a href="/uploads/{{ req[7] }}" target="_blank">Bill</a>
+        </td>
+        <td>
+            <form method="POST" action="/accountant_approve/{{ req[0] }}">
+                <textarea name="remarks" required></textarea><br>
+                <button type="submit" name="action" value="approve">Mark Processed</button>
+                <button type="submit" name="action" value="reject">Reject</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

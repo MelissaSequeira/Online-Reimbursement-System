@@ -175,3 +175,31 @@ def update_md_approval(req_id, status, remarks):
     ''', (status, remarks, f"Pending Accountant" if status == "Approved" else "Rejected by Accountant", req_id))
     conn.commit()
     conn.close()
+
+def get_pending_requests_for_accountant():
+    conn= sqlite3.connect("reimbreeze.db")
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT * FROM reimb_form 
+                WHERE teacher_status ='Approved'
+            AND hod_status = 'Approved'
+          AND principal_status = 'Approved'
+          AND md_status = 'Approved'
+          AND accountant_status = 'Pending'   
+''')
+    data=cur.fetchall()
+    conn.close()
+    return data
+
+def update_accountant_approval(req_id,status, remarks):
+    conn= sqlite3.connect("reimbreeze.db")
+    cur = conn.cursor()
+    cur.execute('''
+    UPDATE reimb_form
+    SET accountant_status = ?, accountant_remarks = ?, status = ?
+        WHERE id = ?
+''',(
+    status,remarks, 'Processed' if status == 'Approved' else 'Rejected by Accountant', req_id
+))
+    conn.commit()
+    conn.close()
