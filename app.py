@@ -31,6 +31,18 @@ if not os.path.exists(UPLOAD_FILE):
 create_users_table()
 reimb_db()
 
+def normalize_statuses():
+    conn = sqlite3.connect("reimbreeze.db")
+    cur = conn.cursor()
+    cur.execute("UPDATE reimb_form SET teacher_status = 'Approved' WHERE LOWER(teacher_status) = 'approved'")
+    cur.execute("UPDATE reimb_form SET hod_status = 'Approved' WHERE LOWER(hod_status) = 'approved'")
+    cur.execute("UPDATE reimb_form SET principal_status = 'Approved' WHERE LOWER(principal_status) = 'approved'")
+    cur.execute("UPDATE reimb_form SET md_status = 'Approved' WHERE LOWER(md_status) = 'approved'")
+    cur.execute("UPDATE reimb_form SET accountant_status = 'Pending' WHERE LOWER(accountant_status) = 'pending'")
+    conn.commit()
+    conn.close()
+
+
 @app.route('/register',methods=['GET','POST'])
 
 def register():
@@ -272,13 +284,13 @@ def md_approve(req_id):
 
 @app.route('/accountant_dashboard')
 def accountant_dashboard():
-    if session.get('role')!='Accountant':
-        flash('Access Denied','danger')
+    if session.get('role') != 'Accountant':
+        flash('Access Denied', 'danger')
         return redirect(url_for('login'))
     requests = get_pending_requests_for_accountant()
-    return render_template('Accountant_dashboard.html', requests=requests)
+    return render_template('accountant_dashboard.html', requests=requests)
 
-@app.route('/accountant_approve/<int:req_id>',methods=['POST'])
+@app.route('/accountant_approve/<int:req_id>', methods=['POST'])
 def accountant_approve(req_id):
     if session.get('role') != 'Accountant':
         flash('Access Denied', 'danger')
@@ -287,18 +299,28 @@ def accountant_approve(req_id):
     remarks = request.form['remarks']
     action = request.form['action']
     status = 'Approved' if action == 'approve' else 'Rejected'
+
     update_accountant_approval(req_id, status, remarks)
-    conn=connect_db()
-    cur=conn.cursor()
-    cur.execute("SELECT email FROM reimb_form WHERE id=?", (req_id,))
+
+    # Notify student
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("SELECT email FROM reimb_form WHERE id = ?", (req_id,))
     student_email = cur.fetchone()[0]
     conn.close()
-    msg = Message('Reimbursement Status', sender=app.config['MAIL_USERNAME'], recipients=[student_email])
-    msg.body = f"Your reimbursement request has been {'approved and processed' if status == 'Approved' else 'rejected by accountant'}.\n\nRemarks: {remarks}"
+
+    msg = Message(
+        'Reimbursement Status Update',
+        sender=app.config['MAIL_USERNAME'],
+        recipients=[student_email]
+    )
+    msg.body = f"Your reimbursement request has been {'approved and processed ✅' if status == 'Approved' else '❌ rejected by the accountant'}.\n\nRemarks: {remarks}"
     mail.send(msg)
 
     flash('✅ Final status saved and student notified.', 'success')
     return redirect(url_for('accountant_dashboard'))
 
 if __name__=='__main__':
+    normalize_statuses()
+
     app.run(debug=True)
