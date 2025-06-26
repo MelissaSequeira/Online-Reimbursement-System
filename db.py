@@ -176,6 +176,13 @@ def update_md_approval(req_id, status, remarks):
     conn.commit()
     conn.close()
 
+def get_emails_by_role(role):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("SELECT email FROM users WHERE role = ?", (role,))
+    result = cur.fetchall()
+    conn.close()
+    return [email[0] for email in result]
 
 
 def get_pending_requests_for_accountant():

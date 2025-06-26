@@ -185,12 +185,12 @@ def uploaded_file(filename):
 
 
 
+# ------------------ TEACHER ------------------
 @app.route('/teacher_dashboard')
 def teacher_dashboard():
     if session.get('role') != 'Teacher':
         flash('Access Denied', 'danger')
         return redirect(url_for('login'))
-
     requests = get_pending_requests_for_teacher()
     return render_template('teacher_dashboard.html', requests=requests)
 
@@ -205,6 +205,16 @@ def teacher_approve(req_id):
 
     if action == 'approve':
         update_teacher_approval(req_id, 'Approved', remarks)
+        # Notify HODs
+        hod_emails = get_emails_by_role('HOD')
+        if hod_emails:
+            msg = Message(
+                "Action Required: HOD Approval",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=hod_emails
+            )
+            msg.body = f"A reimbursement request (ID: {req_id}) has been approved by the Teacher and awaits your review."
+            mail.send(msg)
         flash('✅ Request approved and sent to HOD', 'success')
     elif action == 'reject':
         update_teacher_approval(req_id, 'Rejected', remarks)
@@ -212,75 +222,117 @@ def teacher_approve(req_id):
 
     return redirect(url_for('teacher_dashboard'))
 
+
+# ------------------ HOD ------------------
 @app.route('/hod_dashboard')
 def hod_dashboard():
-    if session.get('role')!='HOD':
+    if session.get('role') != 'HOD':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    requests=get_pending_requests_for_hod();
+    requests = get_pending_requests_for_hod()
     return render_template('Hod_dashboard.html', requests=requests)
 
-@app.route('/hod_approve/<int:req_id>',methods=['POST'])
+@app.route('/hod_approve/<int:req_id>', methods=['POST'])
 def hod_approve(req_id):
-    if session.get('role')!='HOD':
+    if session.get('role') != 'HOD':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    remarks= request.form['remarks']
+
+    remarks = request.form['remarks']
     action = request.form['action']
-    if action=='approve':
-        update_hod_approval(req_id,'approved',remarks)
+
+    if action == 'approve':
+        update_hod_approval(req_id, 'Approved', remarks)
+        principal_emails = get_emails_by_role('Principal')
+        if principal_emails:
+            msg = Message(
+                "Action Required: Principal Approval",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=principal_emails
+            )
+            msg.body = f"Request {req_id} has been approved by HOD. Please review and take action."
+            mail.send(msg)
         flash('✅ Request approved and sent to Principal', 'success')
     elif action == 'reject':
         update_hod_approval(req_id, 'Rejected', remarks)
         flash('❌ Request rejected', 'danger')
+
     return redirect(url_for('hod_dashboard'))
 
+
+# ------------------ PRINCIPAL ------------------
 @app.route('/principal_dashboard')
 def principal_dashboard():
-    if session.get('role')!='Principal':
+    if session.get('role') != 'Principal':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    requests=get_pending_requests_for_principal();
+    requests = get_pending_requests_for_principal()
     return render_template('Principal_dashboard.html', requests=requests)
 
-@app.route('/principal_approve/<int:req_id>',methods=['POST'])
+@app.route('/principal_approve/<int:req_id>', methods=['POST'])
 def principal_approve(req_id):
-    if session.get('role')!='Principal':
+    if session.get('role') != 'Principal':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    remarks= request.form['remarks']
+
+    remarks = request.form['remarks']
     action = request.form['action']
-    if action=='approve':
-        update_principal_approval(req_id,'approved',remarks)
+
+    if action == 'approve':
+        update_principal_approval(req_id, 'Approved', remarks)
+        md_emails = get_emails_by_role('MD')
+        if md_emails:
+            msg = Message(
+                "Action Required: MD Approval",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=md_emails
+            )
+            msg.body = f"Request {req_id} has been approved by Principal. Please review and take action."
+            mail.send(msg)
         flash('✅ Request approved and sent to MD', 'success')
     elif action == 'reject':
         update_principal_approval(req_id, 'Rejected', remarks)
         flash('❌ Request rejected', 'danger')
+
     return redirect(url_for('principal_dashboard'))
 
 
+# ------------------ MD ------------------
 @app.route('/md_dashboard')
 def md_dashboard():
-    if session.get('role')!='MD':
+    if session.get('role') != 'MD':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    requests=get_pending_requests_for_md();
+    requests = get_pending_requests_for_md()
     return render_template('MD_dashboard.html', requests=requests)
 
-@app.route('/md_approve/<int:req_id>',methods=['POST'])
+@app.route('/md_approve/<int:req_id>', methods=['POST'])
 def md_approve(req_id):
-    if session.get('role')!='MD':
+    if session.get('role') != 'MD':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    remarks= request.form['remarks']
+
+    remarks = request.form['remarks']
     action = request.form['action']
-    if action=='approve':
-        update_md_approval(req_id,'approved',remarks)
-        flash('✅ Request approved and sent to accountant', 'success')
+
+    if action == 'approve':
+        update_md_approval(req_id, 'Approved', remarks)
+        accountant_emails = get_emails_by_role('Accountant')
+        if accountant_emails:
+            msg = Message(
+                "Action Required: Accountant Final Check",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=accountant_emails
+            )
+            msg.body = f"Request {req_id} has been approved by MD. Please process this reimbursement."
+            mail.send(msg)
+        flash('✅ Request approved and sent to Accountant', 'success')
     elif action == 'reject':
         update_md_approval(req_id, 'Rejected', remarks)
         flash('❌ Request rejected', 'danger')
+
     return redirect(url_for('md_dashboard'))
+
 
 @app.route('/accountant_dashboard')
 def accountant_dashboard():
