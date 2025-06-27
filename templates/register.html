@@ -1,9 +1,14 @@
 <html>
     <head></head>
     <body>
-        <form method='POST'>
-            <input name='email' placeholder='example@department.fcrit.ac.in' required>
-            <button type='submit'>send otp</button>
-        </form>
+        <!-- register.html -->
+<form method="POST">
+    <label>Enter your email:</label>
+    <input type="email" name="email" required>
+    <button type="submit">Send OTP</button>
+</form>
+
+<p>🔐 Already registered? <a href="{{ url_for('login') }}">Login here</a></p>
+
     </body>
 </html>

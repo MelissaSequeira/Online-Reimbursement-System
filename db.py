@@ -14,21 +14,24 @@ def create_users_table():
             name TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            role TEXT NOT NULL
+            role TEXT NOT NULL,
+            department TEXT NOT NULL
         )
     ''')
     conn.commit()
     conn.close()
 
-def insert_user(name, email, password_hash, role):
+
+def insert_user(name, email, password_hash, role, department):
     conn = connect_db()
     cur = conn.cursor()
     cur.execute('''
-        INSERT INTO users (name, email, password_hash, role)
-        VALUES (?, ?, ?, ?)
-    ''', (name, email, password_hash, role))
+        INSERT INTO users (name, email, password_hash, role, department)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (name, email, password_hash, role, department))
     conn.commit()
     conn.close()
+
 
 def get_user_by_email(email):
     conn = connect_db()
@@ -36,7 +39,16 @@ def get_user_by_email(email):
     cur.execute('SELECT * FROM users WHERE email = ?', (email,))
     user = cur.fetchone()
     conn.close()
-    return user
+    return user  # Ensure you return department-aware structure
+
+def get_emails_by_role_and_dept(role, department):
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("SELECT email FROM users WHERE role = ? AND department = ?", (role, department))
+    result = cur.fetchall()
+    conn.close()
+    return [email[0] for email in result]
+
 
 def reimb_db():
     conn=sqlite3.connect('reimbreeze.db')

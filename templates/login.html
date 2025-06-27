@@ -2,10 +2,20 @@
     <head>
     </head>
     <body>
-        <form method="POST">
-    <input name="email" type="email" placeholder="Enter email" required><br>
-    <input name="password" type="password" placeholder="Enter password" required><br>
+        
+    <!-- login.html -->
+<form method="POST">
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <label>Password:</label><br>
+    <input type="password" name="password" required><br><br>
+
     <button type="submit">Login</button>
+</form>
+
+<p>🔓 Not registered? <a href="{{ url_for('register') }}">Click here to register</a></p>
+
 </form>
 </body>
 </html>

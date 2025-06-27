@@ -42,44 +42,55 @@ def normalize_statuses():
     conn.commit()
     conn.close()
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
 
-@app.route('/register',methods=['GET','POST'])
-
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method=='POST':
-        email= request.form['email']
+    if request.method == 'POST':
+        email = request.form['email']
+
+        # ✅ Check if already registered
+        if get_user_by_email(email):
+            flash('📝 You have already registered. Please login instead.', 'warning')
+            return redirect(url_for('login'))
+
+        # ✅ Continue if not registered
         if not (email.endswith('fcrit.ac.in') or email.endswith('gmail.com')):
-            flash('Only college email id works', 'danger')
+            flash('❌ Only college or Gmail IDs allowed', 'danger')
             return redirect(url_for('register'))
-        otp=str(random.randint (100000,999999))
+
+        otp = str(random.randint(100000, 999999))
         session['otp'] = otp
         session['email'] = email
 
-
-        msg = Message('Your OTP is ', sender='reimb.flask@gmail.com', recipients=[email])
-
-        msg.body=f'Your OTP is {otp}'     
+        msg = Message('Your OTP', sender=app.config['MAIL_USERNAME'], recipients=[email])
+        msg.body = f'Your OTP is {otp}'
         mail.send(msg)
 
-        flash("email sent on ur mail id", 'info')
+        flash("📩 OTP sent to your email.", 'info')
         return redirect(url_for('verify'))
+
     return render_template('register.html')
+
                     
 
 @app.route('/verify', methods=['GET','POST'])
 def verify():
-    if request.method=='POST':
-        ent_otp=request.form['otp']
-        if ent_otp== session.get('otp'):
+    if request.method == 'POST':
+        ent_otp = request.form['otp']
+        if ent_otp == session.get('otp'):
             flash('Email verified successfully', 'success')
-            return "✅ Verified! You can now register/login."
+            return redirect(url_for('complete_registration'))  # ✅ go to next step
         else:
-            flash('invalid otp', 'danger')
+            flash('Invalid OTP', 'danger')
     return render_template('otp.html')
+
 
 @app.route('/complete_registration', methods=['GET', 'POST'])
 def complete_registration():
-    email = session.get('email')  # always fetch this first
+    email = session.get('email')
 
     if not email:
         flash("Session expired. Please restart registration.", "warning")
@@ -89,18 +100,20 @@ def complete_registration():
         name = request.form['name']
         password = request.form['password']
         role = request.form['role']
+        department = request.form['department']  # ✅ NEW
 
         if get_user_by_email(email):
             flash('User already exists. Please login.', 'warning')
             return redirect(url_for('login'))
 
         password_hash = generate_password_hash(password)
-        insert_user(name, email, password_hash, role)
+        insert_user(name, email, password_hash, role, department)  # ✅ NEW ARG
 
         flash('Registration successful! You can now log in.', 'success')
         return redirect(url_for('login'))
-    
+
     return render_template('complete_registration.html')
+
 
 
 @app.route('/login', methods=['GET', 'POST'])    
@@ -111,6 +124,8 @@ def login():
         user = get_user_by_email(email)
 
         if user and check_password_hash(user[3], password):
+            session['department'] = user[5]  # ✅ store department in session
+
             session['user_id'] = user[0]
             session['role'] = user[4]
             session['email'] = user[2]  # ✅ Correct: index 2 is email
@@ -125,9 +140,9 @@ def login():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/student/apply',methods=['GET', 'POST'])
+@app.route('/student/apply', methods=['GET', 'POST'])
 def student_apply():
-    amount=None
+    amount = None
     if request.method == 'POST':
         purpose = request.form['purpose']
         amount = float(request.form['amount'])
@@ -138,9 +153,12 @@ def student_apply():
         bill = request.files['bill']
 
         email = session.get('email')
+        department = session.get('department')  # ✅ get student's department
+
         if not email:
             flash("⚠️ Session expired. Please log in again.", "warning")
-            return redirect(url_for('login')) # simulate session for now
+            return redirect(url_for('login'))
+
         def save_file(file_obj, label):
             if file_obj and allowed_file(file_obj.filename):
                 filename = secure_filename(f"{label}_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file_obj.filename}")
@@ -148,19 +166,30 @@ def student_apply():
                 file_obj.save(filepath)
                 return filename
             return None
+
         letter_filename = save_file(letter, 'letter')
         cert_filename = save_file(certificate, 'certificate')
         brochure_filename = save_file(brochure, 'brochure')
         bill_filename = save_file(bill, 'bill')
+
         insert_reimbursement(email, purpose, amount, letter_filename, cert_filename, brochure_filename, bill_filename)
+
+        # ✅ Notify Teacher(s) of the same department
+        teacher_emails = get_emails_by_role_and_dept('Teacher', department)
+        if teacher_emails:
+            msg = Message(
+                "New Reimbursement Request",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=teacher_emails
+            )
+            msg.body = f"A student from the {department} department has submitted a reimbursement request for: {purpose}.\nPlease login to review."
+            mail.send(msg)
 
         flash("✅ Reimbursement request submitted successfully!", "success")
         return redirect(url_for('student_apply'))
+
     return render_template('student_form.html')
 
-def showName():
-    email = session.get('email')
-    return get_name_by_email(email)
 
 # Dummy dashboards
 
@@ -175,6 +204,11 @@ def student_dashboard():
     reimbursements = get_reimbursement_by_email(email)
     username = showName()
     return render_template('student.html', reimbursements=reimbursements, username=username )
+
+def showName():
+    email = session.get('email')
+    return get_name_by_email(email)
+
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
@@ -206,7 +240,8 @@ def teacher_approve(req_id):
     if action == 'approve':
         update_teacher_approval(req_id, 'Approved', remarks)
         # Notify HODs
-        hod_emails = get_emails_by_role('HOD')
+        hod_emails = get_emails_by_role_and_dept('HOD', session.get('department'))  # ✅
+
         if hod_emails:
             msg = Message(
                 "Action Required: HOD Approval",
@@ -243,7 +278,8 @@ def hod_approve(req_id):
 
     if action == 'approve':
         update_hod_approval(req_id, 'Approved', remarks)
-        principal_emails = get_emails_by_role('Principal')
+        principal_emails = get_emails_by_role_and_dept('Principal', session.get('department'))  # ✅
+
         if principal_emails:
             msg = Message(
                 "Action Required: Principal Approval",
