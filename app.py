@@ -3,6 +3,7 @@ from flask_mail import *  #for email system
 import random   #otp generate karne ke liye
 from dotenv import load_dotenv
 import os
+import tempfile
 #create_users_table, insert_user,get_user_by_email, reimb_db, insert_reimbursement, get_reimbursement_by_email,get_name_by_email,get_pending_requests_for_teacher, update_teacher_approval
 from db import *
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -100,20 +101,19 @@ def complete_registration():
         name = request.form['name']
         password = request.form['password']
         role = request.form['role']
-        department = request.form['department']  # ✅ NEW
+        department = request.form.get('department', 'None')  # 'None' for Principal, MD, Accountant
 
         if get_user_by_email(email):
             flash('User already exists. Please login.', 'warning')
             return redirect(url_for('login'))
 
         password_hash = generate_password_hash(password)
-        insert_user(name, email, password_hash, role, department)  # ✅ NEW ARG
+        insert_user(name, email, password_hash, role, department)
 
         flash('Registration successful! You can now log in.', 'success')
         return redirect(url_for('login'))
 
     return render_template('complete_registration.html')
-
 
 
 @app.route('/login', methods=['GET', 'POST'])    
@@ -225,8 +225,11 @@ def teacher_dashboard():
     if session.get('role') != 'Teacher':
         flash('Access Denied', 'danger')
         return redirect(url_for('login'))
-    requests = get_pending_requests_for_teacher()
+    
+    department = session.get('department')
+    requests = get_pending_requests_for_teacher(department)
     return render_template('teacher_dashboard.html', requests=requests)
+
 
 @app.route('/teacher_approve/<int:req_id>', methods=['POST'])
 def teacher_approve(req_id):
@@ -264,8 +267,11 @@ def hod_dashboard():
     if session.get('role') != 'HOD':
         flash('Access denied', 'danger')
         return redirect(url_for('login'))
-    requests = get_pending_requests_for_hod()
+
+    department = session.get('department')
+    requests = get_pending_requests_for_hod(department)
     return render_template('Hod_dashboard.html', requests=requests)
+
 
 @app.route('/hod_approve/<int:req_id>', methods=['POST'])
 def hod_approve(req_id):
@@ -390,22 +396,78 @@ def accountant_approve(req_id):
 
     update_accountant_approval(req_id, status, remarks)
 
-    # Notify student
+    # Get student email & department
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute("SELECT email FROM reimb_form WHERE id = ?", (req_id,))
-    student_email = cur.fetchone()[0]
+    cur.execute("SELECT * FROM reimb_form WHERE id = ?", (req_id,))
+    form_data = cur.fetchone()
+    cur.execute("SELECT name FROM users WHERE email = ?", (form_data[1],))
+    student_name = cur.fetchone()[0]
     conn.close()
+
+    # Send email to student
+    student_email = form_data[1]
+    department = form_data[-1]  # last column is department
 
     msg = Message(
         'Reimbursement Status Update',
         sender=app.config['MAIL_USERNAME'],
         recipients=[student_email]
     )
-    msg.body = f"Your reimbursement request has been {'approved and processed ✅' if status == 'Approved' else '❌ rejected by the accountant'}.\n\nRemarks: {remarks}"
+    msg.body = f"""
+Dear Student,
+
+Your reimbursement request (ID: {req_id}) has been {'✅ approved and processed' if status == 'Approved' else '❌ rejected by the accountant'}.
+
+Remarks: {remarks}
+
+Thank you,
+Accounts Department
+"""
     mail.send(msg)
 
-    flash('✅ Final status saved and student notified.', 'success')
+    if status == 'Approved':
+        # Prepare PDF report
+        form_keys = [
+            'id', 'email', 'purpose', 'amount', 'letter', 'certificate',
+            'brochure', 'bill', 'status', 'submitted_at',
+            'teacher_status', 'teacher_remarks',
+            'hod_status', 'hod_remarks',
+            'principal_status', 'principal_remarks',
+            'md_status', 'md_remarks',
+            'accountant_status', 'accountant_remarks', 'department'
+        ]
+        data_dict = dict(zip(form_keys, form_data))
+        data_dict['student_name'] = student_name
+
+        # Generate PDF in temporary path
+        temp_path = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf").name
+        generate_reimbursement_report(data_dict, temp_path)
+
+        # Send email to teacher with PDF
+        teacher_emails = get_emails_by_role_and_dept('Teacher', department)
+        if teacher_emails:
+            msg2 = Message(
+                "✅ Final Reimbursement Report",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=teacher_emails
+            )
+            msg2.body = f"""
+Dear Faculty,
+
+The reimbursement request (ID: {req_id}) from student {student_name} has been fully approved and processed.
+
+Please find the attached report for your records.
+
+Regards,
+Reimbursement Portal
+"""
+            with open(temp_path, 'rb') as f:
+                msg2.attach(f"Reimbursement_Report_{req_id}.pdf", "application/pdf", f.read())
+
+            mail.send(msg2)
+
+    flash('✅ Final status saved, student and teacher notified with report.', 'success')
     return redirect(url_for('accountant_dashboard'))
 
 if __name__=='__main__':
