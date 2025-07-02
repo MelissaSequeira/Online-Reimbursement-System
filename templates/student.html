@@ -3,31 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student dashboard</title>
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='student.css') }}">
 </head>
 <body>
-    <h1> Welcome {{username}}</h1>
-    <button onclick="window.location.href='/student/apply'">Apply for New Reimbursement</button>
-    <h3>Your previous submissions</h3>
-    {% if reimbursements %}
-    <table border='1' cellpadding='10'>
-        <tr>
-            <th>Purpose</th>
-            <th>Amount (₹)</th>
-            <th>Status</th>
-            <th>Submitted At</th>
-        </tr>
-        {%for item in reimbursements%}
-                <tr>
-                    <td>{{ item[0] }}</td>
-                    <td>{{ item[1] }}</td>
-                    <td>{{ item[2] }}</td>
-                    <td>{{ item[3] }}</td>
-                </tr>
-        {% endfor %}
+    <!-- Header with logo -->
+    <div class="header">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
+    <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+</div>
+
+
+    <!-- Dashboard content -->
+    <div class="dashboard-container">
+        <h2>Welcome, {{ username }}</h2>
+        <button class="apply-button" onclick="window.location.href='/student/apply'">
+            Apply for New Reimbursement
+        </button>
+
+        <h3>Your Previous Submissions</h3>
+
+        {% if reimbursements %}
+        <table class="reimbursement-table">
+            <tr>
+                <th>Purpose</th>
+                <th>Amount (₹)</th>
+                <th>Status</th>
+                <th>Submitted At</th>
+            </tr>
+            {% for item in reimbursements %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+            </tr>
+            {% endfor %}
         </table>
-    {% else %}
+        {% else %}
         <p>No previous reimbursements found.</p>
-    {% endif %}
+        {% endif %}
+    </div>
 </body>
 </html>

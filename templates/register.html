@@ -1,14 +1,25 @@
+<!DOCTYPE html>
 <html>
-    <head></head>
-    <body>
-        <!-- register.html -->
-<form method="POST">
-    <label>Enter your email:</label>
-    <input type="email" name="email" required>
-    <button type="submit">Send OTP</button>
-</form>
+<head>
+    <title>Register - FCRIT</title>
+    <link rel="stylesheet" href="static/register.css">
+</head>
+<body>
+    <div class="header">
+        <img src="static/fcritlogo-removebg-preview.png" alt="College Logo" class="logo">
+        <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+    </div>
 
-<p>🔐 Already registered? <a href="{{ url_for('login') }}">Login here</a></p>
+    <div class="register-container">
+        <form method="POST" class="register-form">
+            <label>Enter your email:</label>
+            <input type="email" name="email" required>
+            <button type="submit">Send OTP</button>
+        </form>
 
-    </body>
+        <p class="register-link">🔐 Already registered?
+            <a href="{{ url_for('login') }}">Login here</a>
+        </p>
+    </div>
+</body>
 </html>

@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
     <title>MD Dashboard</title>
 </head>
 <body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
+        <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+    </div>
     <h2>MD(Fr. Seby Rodrigues or Fr. Peter) Approval Dashboard</h2>
 
     {% if requests %}
