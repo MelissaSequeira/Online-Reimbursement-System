@@ -3,41 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Complete Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='complete.css') }}">
 </head>
+
 <body>
 
-    <h2>Complete Your Registration</h2>
-    <form method="POST">
-        <label for="name">Name:</label>
-        <input type="text" name="name" required><br><br>
+    <!-- FCRIT Header -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
+        <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+    </div>
 
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br><br>
+    <div class="form-container">
+        <h2>Complete Your Registration</h2>
+        <form method="POST" class="register-form">
+            <label for="name">Name:</label>
+            <input type="text" name="name" required>
 
-        <label for="role">Role:</label>
-        <select name="role" id="role" onchange="toggleDepartment()" required>
-            <option value="" disabled selected>Select Role</option>
-            <option value="Student">Student</option>
-            <option value="Teacher">Teacher</option>
-            <option value="HOD">HOD</option>
-            <option value="Principal">Principal</option>
-            <option value="MD">MD</option>
-            <option value="Accountant">Accountant</option>
-        </select><br><br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
 
-        <div id="deptContainer" style="display: none;">
-            <label for="department">Department:</label>
-            <select name="department" id="department">
-                <option value="" disabled selected>Select Department</option>
-                <option value="COMPS">COMPS</option>
-                <option value="IT">IT</option>
-                <option value="EXTC">EXTC</option>
-                <option value="MECH">MECH</option>
-            </select><br><br>
-        </div>
+            <label for="role">Role:</label>
+            <select name="role" id="role" onchange="toggleDepartment()" required>
+                <option value="" disabled selected>Select Role</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+                <option value="HOD">HOD</option>
+                <option value="Principal">Principal</option>
+                <option value="MD">MD</option>
+                <option value="Accountant">Accountant</option>
+            </select>
 
-        <button type="submit">Register</button>
-    </form>
+            <div id="deptContainer" style="display: none;">
+                <label for="department">Department:</label>
+                <select name="department" id="department">
+                    <option value="" disabled selected>Select Department</option>
+                    <option value="COMPS">COMPS</option>
+                    <option value="IT">IT</option>
+                    <option value="EXTC">EXTC</option>
+                    <option value="MECH">MECH</option>
+                </select>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
 
     <script>
         function toggleDepartment() {
@@ -51,7 +61,7 @@
             } else {
                 deptDiv.style.display = 'none';
                 deptSelect.required = false;
-                deptSelect.value = "";  // Clear selection if previously chosen
+                deptSelect.value = "";
             }
         }
     </script>

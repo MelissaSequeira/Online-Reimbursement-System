@@ -1,13 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Verify OTP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
 </head>
 <body>
-    <h2>Enter OTP sent to your email</h2>
-    <form method="POST">
-        <input type="text" name="otp" placeholder="Enter 6-digit OTP" required>
-        <button type="submit">Verify</button>
-    </form>
+
+    <!-- FCRIT Header -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
+        <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+    </div>
+
+    <div class="form-container">
+        <h2>Enter OTP sent to your email</h2>
+        <form method="POST" class="register-form">
+            <label for="otp">OTP:</label>
+            <input type="text" name="otp" placeholder="Enter 6-digit OTP" required>
+            <button type="submit">Verify</button>
+        </form>
+    </div>
+
 </body>
 </html>

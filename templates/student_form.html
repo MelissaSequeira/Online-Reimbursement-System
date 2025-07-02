@@ -2,33 +2,44 @@
 <html>
 <head>
     <title>Apply for Reimbursement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='studform.css') }}">
 </head>
 <body>
-    <h2>Reimbursement Form</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <label>Purpose:</label><br>
-        <input type="text" name="purpose" required><br><br>
 
-        <label>Amount (₹):</label><br>
-        <input type="number" name="amount" required><br><br>
+    <!-- FCRIT Header -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
+        <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+    </div>
 
-        <label>Upload Reimbursement Letter (PDF, JPG, PNG):</label><br>
-        <input type="file" name="letter" accept=".pdf,.jpg,.jpeg,.png" required><br><br>
+    <div class="form-container">
+        <h2>Reimbursement Form</h2>
+        <form method="POST" enctype="multipart/form-data" class="reimbursement-form">
+            <label for="purpose">Purpose:</label>
+            <input type="text" name="purpose" required>
 
-        <label>Upload Certificate(s) (PDF, JPG, PNG):</label><br>
-        <input type="file" name="certificate" accept=".pdf,.jpg,.jpeg,.png" required><br><br>
+            <label for="amount">Amount (₹):</label>
+            <input type="number" name="amount" required>
 
-        <label>Upload Brochure Screenshot (PDF, JPG, PNG):</label><br>
-        <input type="file" name="brochure" accept=".pdf,.jpg,.jpeg,.png" required><br><br>
+            <label for="letter">Upload Reimbursement Letter (PDF, JPG, PNG):</label>
+            <input type="file" name="letter" accept=".pdf,.jpg,.jpeg,.png" required>
 
-        <label>Upload Bill (PDF, JPG, PNG):</label><br>
-        <input type="file" name="bill" accept=".pdf,.jpg,.jpeg,.png" required><br><br>
+            <label for="certificate">Upload Certificate(s) (PDF, JPG, PNG):</label>
+            <input type="file" name="certificate" accept=".pdf,.jpg,.jpeg,.png" required>
 
-        <button type="submit">Submit</button>
-    </form>
+            <label for="brochure">Upload Brochure Screenshot (PDF, JPG, PNG):</label>
+            <input type="file" name="brochure" accept=".pdf,.jpg,.jpeg,.png" required>
 
-    {% if amount and amount|float > 6000 %}
-        <p><strong>Note:</strong> ₹{{ amount }} is more than the ₹6000 limit. Please contact HR for further assistance.</p>
-    {% endif %}
+            <label for="bill">Upload Bill (PDF, JPG, PNG):</label>
+            <input type="file" name="bill" accept=".pdf,.jpg,.jpeg,.png" required>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        {% if amount and amount|float > 6000 %}
+            <p class="note">Note: ₹{{ amount }} is more than the ₹6000 limit. Please contact HR for further assistance.</p>
+        {% endif %}
+    </div>
+
 </body>
 </html>

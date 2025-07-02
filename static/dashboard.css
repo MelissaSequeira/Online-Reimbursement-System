@@ -1,0 +1,105 @@
+/* FCRIT Header */
+body{margin:0;}
+.header {
+    background-color: #003366;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logo {
+    height: 60px;
+    width: 60px;
+}
+
+.college-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+}
+
+/* Dashboard container */
+.dashboard-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-container h2 {
+    color: #003366;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+table th {
+    background-color: #003366;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Remarks textarea */
+textarea {
+    width: 90%;
+    height: 60px;
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Buttons */
+button {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+
+button[name="action"][value="approve"] {
+    background-color: #28a745;
+}
+
+button[name="action"][value="reject"] {
+    background-color: #dc3545;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* Links to files */
+td a {
+    text-decoration: none;
+    color: #003366;
+}
+
+td a:hover {
+    text-decoration: underline;
+}

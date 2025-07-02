@@ -1,0 +1,91 @@
+/* Base Styling (already present, ensure it's not overridden) */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+.header {
+    background-color: #003366;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logo {
+    height: 60px;
+    width: 60px;
+}
+
+.college-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.form-container h2 {
+    text-align: center;
+    color: #003366;
+    margin-bottom: 25px;
+}
+
+/* Form Fields */
+.reimbursement-form label {
+    font-weight: bold;
+    color: #003366;
+    display: block;
+    margin-top: 15px;
+}
+
+.reimbursement-form input[type="text"],
+.reimbursement-form input[type="number"],
+.reimbursement-form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+/* Button */
+.reimbursement-form button {
+    margin-top: 25px;
+    width: 100%;
+    background-color: #003366;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.reimbursement-form button:hover {
+    background-color: #00509e;
+}
+
+/* Note Message */
+.note {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #c0392b;
+}

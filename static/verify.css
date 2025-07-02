@@ -1,0 +1,82 @@
+
+/* General Reset and Background */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header (Logo + College Name) */
+.header {
+    background-color: #003366;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.logo {
+    height: 60px;
+    width: 60px;
+}
+
+.college-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Centered Card Container */
+.form-container {
+    max-width: 450px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.form-container h2 {
+    text-align: center;
+    color: #003366;
+    margin-bottom: 25px;
+}
+
+/* Form Styling */
+.register-form label {
+    font-weight: bold;
+    color: #003366;
+    display: block;
+    margin-top: 15px;
+}
+
+.register-form input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.register-form button {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #003366;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.register-form button:hover {
+    background-color: #00509e;
+}
