@@ -1,5 +1,12 @@
 /* FCRIT Header */
-body{margin:0;}
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
 .header {
     background-color: #003366;
     color: white;

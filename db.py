@@ -180,6 +180,23 @@ def get_name_by_email(email):
     conn.close()
     return name[0] if name else None
 
+def get_all_users():
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("SELECT name, email, role, department FROM users")
+    data = cur.fetchall()
+    conn.close()
+    return data
+
+def get_all_reimbursements():
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute('''SELECT email, purpose, amount, status, submitted_at, teacher_status, hod_status, principal_status, md_status, accountant_status 
+                   FROM reimb_form''')
+    data = cur.fetchall()
+    conn.close()
+    return data
+
 # ---------------- Reimbursement Flow ----------------
 
 def insert_reimbursement(email, purpose, amount, letter, certificate, brochure, bill):

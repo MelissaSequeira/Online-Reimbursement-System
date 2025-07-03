@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, send_from_directory, url_for, session, flash  #application hi flask ka hai
+from flask import Flask, Response, render_template, request, redirect, send_from_directory, url_for, session, flash  #application hi flask ka hai
 from flask_mail import *  #for email system
 import random   #otp generate karne ke liye
 from dotenv import load_dotenv
@@ -206,6 +206,39 @@ def student_apply():
 
 # Dummy dashboards
 
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    if session.get('role') != 'Admin':
+        flash('Access denied', 'danger')
+        return redirect(url_for('login'))
+
+    users = get_all_users()
+    reimbursements = get_all_reimbursements()
+    return render_template('admin_dashboard.html', users=users, reimbursements=reimbursements)
+
+
+@app.route('/export_reimbursements')
+def export_reimbursements():
+    if session.get('role') != 'Admin':
+        flash("Access denied", "danger")
+        return redirect(url_for('login'))
+
+    data = get_all_reimbursements()  # This function should return a list of tuples
+    output = []
+
+    # Header
+    output.append(['Email', 'Purpose', 'Amount', 'Status', 'Submitted At', 'Teacher Status', 'HOD Status', 'Principal Status', 'MD Status', 'Accountant Status'])
+
+    for row in data:
+        output.append(list(row))
+
+    # Create CSV
+    def generate():
+        for row in output:
+            yield ','.join(str(cell) for cell in row) + '\n'
+
+    return Response(generate(), mimetype='text/csv',
+                    headers={"Content-Disposition": "attachment;filename=reimbursements.csv"})
 
 @app.route('/student_dashboard')
 def student_dashboard():
