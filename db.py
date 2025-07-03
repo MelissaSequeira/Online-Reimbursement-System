@@ -359,6 +359,5 @@ def add_department_column_to_reimb_form():
     conn.commit()
     conn.close()
 
-
 # Optional: Run this once manually
 # add_department_column_to_reimb_form()
