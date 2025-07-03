@@ -47,6 +47,12 @@ def normalize_statuses():
 def home():
     return redirect(url_for('login'))
 
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('login')) 
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':

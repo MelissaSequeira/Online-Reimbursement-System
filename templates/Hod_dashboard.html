@@ -9,6 +9,9 @@
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
         <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+         <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
+        <button type="submit">Logout</button>
+    </form>
     </div>
     <h2>HOD Approval Dashboard</h2>
 

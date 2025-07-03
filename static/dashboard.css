@@ -14,6 +14,25 @@ body{margin:0;}
     height: 100px;
     width: 100px;
 }
+.logout-form {
+    margin-left: auto;
+}
+
+.logout-form button {
+    background-color: #1285d2;
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-form button:hover {
+    background-color: #50bad2;
+}
+
 
 .college-name {
     font-size: 24px;

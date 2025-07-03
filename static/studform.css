@@ -16,6 +16,43 @@ body {
     justify-content: center;
     gap: 15px;
 }
+.logout-form {
+    margin-left: auto;
+}
+
+.logout-form button {
+    background-color: #1285d2;
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-form button:hover {
+    background-color: #50bad2;
+}
+.back-dashboard {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-dashboard button {
+    background-color: #003366;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.back-dashboard button:hover {
+    background-color: #00509e;
+}
 
 .logo {
     height: 100px;

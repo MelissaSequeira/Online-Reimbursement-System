@@ -10,6 +10,9 @@
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
         <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+         <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
+        <button type="submit">Logout</button>
+    </form>
     </div>
 
     <div class="form-container">
@@ -39,6 +42,11 @@
         {% if amount and amount|float > 6000 %}
             <p class="note">Note: ₹{{ amount }} is more than the ₹6000 limit. Please contact HR for further assistance.</p>
         {% endif %}
+    </div>
+    <div class="back-dashboard">
+        <a href="{{ url_for('student_dashboard') }}">
+            <button type="button">← Back to Dashboard</button>
+        </a>
     </div>
 
 </body>

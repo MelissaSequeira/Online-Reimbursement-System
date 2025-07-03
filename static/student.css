@@ -23,6 +23,25 @@ body{
     margin: 0;
     color: white;
 }
+.logout-form {
+    margin-left: auto;
+}
+
+.logout-form button {
+    background-color: #1285d2;
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-form button:hover {
+    background-color: #50bad2;
+}
+
 .dashboard-container {
     max-width: 900px;
     margin: 40px auto;
