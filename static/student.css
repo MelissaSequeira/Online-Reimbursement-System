@@ -14,10 +14,9 @@ body{
 }
 
 .logo {
-    height: 60px;
-    width: 60px;
+    height: 100px;
+    width: 100px;
 }
-
 .college-name {
     font-size: 24px;
     font-weight: bold;
