@@ -12,6 +12,13 @@ body{
     text-align: center;
     
 }
+.department-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #00d0ff; /* or any color that suits the design */
+    margin-top: 5px;
+}
+
 
 .logo {
     height: 100px;

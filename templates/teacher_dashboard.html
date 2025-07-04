@@ -7,12 +7,16 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
-        <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
-         <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="logo">
+    <h1 class="college-name">Fr. C Rodrigues Institute of Technology, Vashi</h1>
+    {% if session.role in ['Student', 'Teacher', 'HOD'] %}
+    <p class="department-name">Department: {{ session.department }}</p>
+{% endif %}
+
+     <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
         <button type="submit">Logout</button>
     </form>
-    </div>
+</div>
     <h2>Teacher Approval Dashboard</h2>
 
     {% if requests %}

@@ -6,7 +6,12 @@ body {
     padding: 0;
     text-align: center;
 }
-
+.department-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #359eb8; /* or any color that suits the design */
+    margin-top: 5px;
+}
 .header {
     background-color: #003366;
     color: white;

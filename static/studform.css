@@ -30,7 +30,12 @@ body {
     cursor: pointer;
     font-size: 14px;
 }
-
+.department-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #00c8ff; /* or any color that suits the design */
+    margin-top: 5px;
+}
 .logout-form button:hover {
     background-color: #50bad2;
 }

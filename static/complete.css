@@ -25,7 +25,12 @@ body {
     height: 100px;
     width: 100px;
 }
-
+.department-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #00c8ff; /* or any color that suits the design */
+    margin-top: 5px;
+}
 .college-name {
     font-size: 24px;
     font-weight: bold;

@@ -7,6 +7,8 @@ import tempfile
 #create_users_table, insert_user,get_user_by_email, reimb_db, insert_reimbursement, get_reimbursement_by_email,get_name_by_email,get_pending_requests_for_teacher, update_teacher_approval
 from db import *
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+
 from datetime import datetime
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib.pagesizes import A4
