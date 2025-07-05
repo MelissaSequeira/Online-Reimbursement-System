@@ -1,5 +1,4 @@
-
-/* General Reset and Background */
+/* 
 body {
     font-family: Arial, sans-serif;
     background: #f4f6f9;
@@ -7,7 +6,6 @@ body {
     padding: 0;
 }
 
-/* Header (Logo + College Name) */
 .header {
     background-color: #003366;
     color: white;
@@ -29,7 +27,6 @@ body {
     margin: 0;
 }
 
-/* Centered Card Container */
 .form-container {
     max-width: 450px;
     margin: 50px auto;
@@ -39,14 +36,12 @@ body {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* Heading */
 .form-container h2 {
     text-align: center;
     color: #003366;
     margin-bottom: 25px;
 }
 
-/* Form Styling */
 .register-form label {
     font-weight: bold;
     color: #003366;
@@ -79,4 +74,4 @@ body {
 
 .register-form button:hover {
     background-color: #00509e;
-}
+} */

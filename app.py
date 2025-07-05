@@ -332,7 +332,7 @@ def hod_approve(req_id):
 
     if action == 'approve':
         update_hod_approval(req_id, 'Approved', remarks)
-        principal_emails = get_emails_by_role_and_dept('Principal', session.get('department'))  # ✅
+        principal_emails = get_emails_by_role('Principal')  # ✅
 
         if principal_emails:
             msg = Message(

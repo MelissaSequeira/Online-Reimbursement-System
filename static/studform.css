@@ -1,4 +1,4 @@
-/* Base Styling (already present, ensure it's not overridden) */
+/* Base Styling (already present, ensure it's not overridden)
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f9;
@@ -6,7 +6,6 @@ body {
     padding: 0;
 }
 
-/* Header */
 .header {
     background-color: #003366;
     color: white;
@@ -33,7 +32,7 @@ body {
 .department-name {
     font-size: 14px;
     font-weight: bold;
-    color: #00c8ff; /* or any color that suits the design */
+    color: #00c8ff;
     margin-top: 5px;
 }
 .logout-form button:hover {
@@ -70,7 +69,6 @@ body {
     margin: 0;
 }
 
-/* Form Container */
 .form-container {
     max-width: 600px;
     margin: 40px auto;
@@ -79,15 +77,11 @@ body {
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
-
-/* Heading */
 .form-container h2 {
     text-align: center;
     color: #003366;
     margin-bottom: 25px;
 }
-
-/* Form Fields */
 .reimbursement-form label {
     font-weight: bold;
     color: #003366;
@@ -105,8 +99,6 @@ body {
     border-radius: 6px;
     box-sizing: border-box;
 }
-
-/* Button */
 .reimbursement-form button {
     margin-top: 25px;
     width: 100%;
@@ -124,10 +116,9 @@ body {
     background-color: #00509e;
 }
 
-/* Note Message */
 .note {
     text-align: center;
     margin-top: 20px;
     font-weight: bold;
     color: #c0392b;
-}
+} */

@@ -1,4 +1,4 @@
-/* Overall page layout */
+/* 
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f9;
@@ -9,7 +9,6 @@ body {
     align-items: center;
 }
 
-/* Header with logo and name */
 .header {
     background-color: #003366;
     color: white;
@@ -28,7 +27,7 @@ body {
 .department-name {
     font-size: 14px;
     font-weight: bold;
-    color: #00c8ff; /* or any color that suits the design */
+    color: #00c8ff; 
     margin-top: 5px;
 }
 .college-name {
@@ -38,7 +37,6 @@ body {
     color: white;
 }
 
-/* Registration Form Container */
 .form-container {
     background-color: white;
     margin-top: 40px;
@@ -49,14 +47,12 @@ body {
     width: 90%;
 }
 
-/* Form Heading */
 .form-container h2 {
     text-align: center;
     color: #003366;
     margin-bottom: 25px;
 }
 
-/* Labels */
 .register-form label {
     display: block;
     margin-bottom: 5px;
@@ -64,7 +60,6 @@ body {
     font-weight: bold;
 }
 
-/* Input fields and dropdown */
 .register-form input,
 .register-form select {
     width: 100%;
@@ -76,7 +71,6 @@ body {
     font-size: 14px;
 }
 
-/* Submit button */
 .register-form button {
     width: 100%;
     background-color: #003366;
@@ -94,7 +88,6 @@ body {
     background-color: #00509e;
 }
 
-/* Hidden by default until role is selected */
 #deptContainer {
     display: none;
-}
+} */
