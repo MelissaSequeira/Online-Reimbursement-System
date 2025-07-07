@@ -109,12 +109,9 @@ Open in browser: `http://127.0.0.1:5000/register`
 
 ---
 
-## 📦 Deliverables
-- ✅ Flask Web App with OTP and Role-Based Login
-- ✅ Reimbursement Workflow with Approvals
-- ✅ Source Code & Documentation
-- ✅ Final PDF Summary
-- ✅ Slides + Demo Video (optional)
+## 📦Deployment
+- ✅ Postgres version: https://github.com/MelissaSequeira/postgres-rms
+- ✅ Deployed on Render : https://postgres-rms.onrender.com
 
 ---
 
